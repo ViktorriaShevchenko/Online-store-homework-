@@ -49,7 +49,7 @@ public class ProductBasket {
             return false;
         }
         for (int i = 0; i < count; i++) {
-            if (products[i].getName().equals(name)) {
+            if (products[i].getName().equalsIgnoreCase(name)) {
                     return true;
                 }
             }
