@@ -45,7 +45,7 @@ public class ProductBasket {
     }
 
     public boolean containsProduct(String name) {
-        if (name == null) {
+        if (name == null || name.isBlank()) {
             return false;
         }
         for (int i = 0; i < count; i++) {

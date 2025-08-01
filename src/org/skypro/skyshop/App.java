@@ -1,17 +1,35 @@
 package org.skypro.skyshop;
 
+import org.skypro.skyshop.Exception.BestResultNotFound;
 import org.skypro.skyshop.articles.Article;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
+import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
 public class App {
     public static void main(String[] args) {
+        try {
+            Product test1 = new SimpleProduct(" ", 170);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Test 1: " + e.getMessage());
+        }
+        try {
+            Product test2 = new SimpleProduct("Тестовый", -50);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Test 2: " + e.getMessage());
+        }
+        try {
+            DiscountedProduct test3 = new DiscountedProduct("тестовый", 1500, 120);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Test 3: " + e.getMessage());
+        }
+
         SimpleProduct coffee = new SimpleProduct("Кофе", 250);
-        SimpleProduct bread = new SimpleProduct("Хлеб", 75);
+        SimpleProduct coffeCheaper = new SimpleProduct("Кофе в стике", 75);
         SimpleProduct milk = new SimpleProduct("Молоко", 135);
         FixPriceProduct  banana = new FixPriceProduct ("Бананы");
         FixPriceProduct  eggs = new FixPriceProduct ("Яйца");
@@ -28,7 +46,7 @@ public class App {
         searchEngine.add(chocolate);
         searchEngine.add(milk);
         searchEngine.add(banana);
-        searchEngine.add(bread);
+        searchEngine.add(coffeCheaper);
         searchEngine.add(eggs);
         searchEngine.add(wine);
         searchEngine.add(coffee);
@@ -54,6 +72,23 @@ public class App {
         Searchable[] wineResult = searchEngine.search("вино");
         printSearchResult(wineResult);
         ProductBasket.separation();
+
+        try {
+            System.out.println("Лучшее совпадение 'кофе'");
+            Searchable bestCoffee = searchEngine.findBestMatch("кофе");
+            System.out.println("Лучший результат: " + bestCoffee.getStringRepresentation());
+        } catch (BestResultNotFound e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+
+        try {
+            System.out.println("Поиск несуществующего товара 'Цветы'");
+            Searchable bestBeer = searchEngine.findBestMatch("пиво");
+            System.out.println("Лучший результат: " + bestBeer.getStringRepresentation());
+        } catch (BestResultNotFound e) {
+            System.out.println("Ошибка: " + e.getMessage()); // Должно сработать
+        }
+
         System.out.println("Попытка переполнения корзины");
         basket.addProduct(milk);
         basket.addProduct(banana);
