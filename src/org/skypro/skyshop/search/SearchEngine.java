@@ -1,5 +1,7 @@
 package org.skypro.skyshop.search;
 
+import org.skypro.skyshop.Exception.BestResultNotFound;
+
 public class SearchEngine {
     private Searchable[] searchables;
     private int currentIndex;
@@ -36,6 +38,48 @@ public class SearchEngine {
             }
         }
         return results;
+    }
+
+    public Searchable findBestMatch(String search) throws BestResultNotFound {
+        if (search == null || search.isEmpty()) {
+            throw new BestResultNotFound(search);
+        }
+        Searchable bestMatch = null;
+        int maxCount = -1;
+
+        for (Searchable item : searchables) {
+            if (item == null) continue;
+            String term = item.getSearchTerm();
+            if (term == null) continue;
+            int count = countSubstringOccurrences(term.toLowerCase(), search.toLowerCase());
+            if (count > maxCount) {
+                maxCount = count;
+                bestMatch = item;
+            }
+        }
+        if (bestMatch == null) {
+            throw new BestResultNotFound(search);
+        }
+        return bestMatch;
+    }
+
+    private int countSubstringOccurrences(String str, String substring) {
+        int count = 0;
+        int index = 0;
+        int substringLength = substring.length();
+
+        if (substringLength == 0) {
+            return 0;
+        }
+        while (true) {
+            index = str.indexOf(substring, index);
+            if (index == -1) {
+                break;
+            }
+            count++;
+            index += substringLength;
+        }
+        return count;
     }
 }
 
