@@ -1,7 +1,7 @@
 package org.skypro.skyshop.Exception;
 
-public class BestResultNotFound extends Exception {
-    public BestResultNotFound(String query) {
+public class BestResultNotFoundException extends Exception {
+    public BestResultNotFoundException(String query) {
         super("Не найдено подходящих результатов для запроса: " + query);
     }
 }
