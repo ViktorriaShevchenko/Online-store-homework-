@@ -1,6 +1,6 @@
 package org.skypro.skyshop;
 
-import org.skypro.skyshop.Exception.BestResultNotFound;
+import org.skypro.skyshop.Exception.BestResultNotFoundException;
 import org.skypro.skyshop.articles.Article;
 import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.product.DiscountedProduct;
@@ -9,6 +9,7 @@ import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -66,10 +67,10 @@ public class App {
         ProductBasket.separation();
         System.out.println("Тестирование поисковой системы: ");
         System.out.println("Результаты поиска 'яйца': ");
-        Searchable[] eggResult = searchEngine.search("яйца");
+        List<Searchable> eggResult = searchEngine.search("яйца");
         printSearchResult(eggResult);
         System.out.println("Результаты поиска 'вино': ");
-        Searchable[] wineResult = searchEngine.search("вино");
+        List<Searchable> wineResult = searchEngine.search("вино");
         printSearchResult(wineResult);
         ProductBasket.separation();
 
@@ -77,7 +78,7 @@ public class App {
             System.out.println("Лучшее совпадение 'кофе'");
             Searchable bestCoffee = searchEngine.findBestMatch("кофе");
             System.out.println("Лучший результат: " + bestCoffee.getStringRepresentation());
-        } catch (BestResultNotFound e) {
+        } catch (BestResultNotFoundException e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
 
@@ -85,7 +86,7 @@ public class App {
             System.out.println("Поиск несуществующего товара 'Цветы'");
             Searchable bestBeer = searchEngine.findBestMatch("пиво");
             System.out.println("Лучший результат: " + bestBeer.getStringRepresentation());
-        } catch (BestResultNotFound e) {
+        } catch (BestResultNotFoundException e) {
             System.out.println("Ошибка: " + e.getMessage()); // Должно сработать
         }
 
@@ -100,6 +101,30 @@ public class App {
         System.out.println("Есть ли рыба в корзине? " + basket.containsProduct("Рыба"));
         System.out.println("Общая стоимость корзины: " + basket.getTotalPrice() + " руб.");
         ProductBasket.separation();
+
+        System.out.println("Удаление продукта по имени 'кофе': ");
+        List<Product> removedProducts = basket.removeProductsByName("Кофе");
+        if (removedProducts.isEmpty()) {
+            System.out.println("Продукт 'кофе' не найден!");
+        } else {
+            System.out.println("Удаленный продукт: ");
+            for (Product product : removedProducts) {
+                System.out.println(product);
+            }
+        }
+        System.out.println("Состояние корзины после удаления кофе:");
+        basket.printBasket();
+        ProductBasket.separation();
+
+        System.out.println("Удаление продукта по имени 'Чай': ");
+        removedProducts = basket.removeProductsByName("Чай");
+        if (removedProducts.isEmpty()) {
+            System.out.println("Продукт 'чай' не найден");
+        }
+        System.out.println("Состояние корзины после удаления продуктов:");
+        basket.printBasket();
+        ProductBasket.separation();
+
         System.out.println("Очистка корзины ");
         ProductBasket.separation();
         basket.clearBasket();
@@ -109,10 +134,13 @@ public class App {
         ProductBasket.separation();
     }
 
-    private static void printSearchResult(Searchable[] results) {
-        if (results == null || results.length == 0) {
+    private static void printSearchResult(List<Searchable> results) {
+        if (results == null || results.isEmpty()) {
             System.out.println("Ничего не найдено");
             return;
+        }
+        for (Searchable item : results) {
+            System.out.println(item.getStringRepresentation());
         }
 
         int count = 0;
