@@ -10,6 +10,7 @@ import org.skypro.skyshop.product.SimpleProduct;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 import java.util.List;
+import java.util.Map;
 
 public class App {
     public static void main(String[] args) {
@@ -67,10 +68,10 @@ public class App {
         ProductBasket.separation();
         System.out.println("Тестирование поисковой системы: ");
         System.out.println("Результаты поиска 'яйца': ");
-        List<Searchable> eggResult = searchEngine.search("яйца");
+        Map<String, Searchable> eggResult = searchEngine.search("яйца");
         printSearchResult(eggResult);
         System.out.println("Результаты поиска 'вино': ");
-        List<Searchable> wineResult = searchEngine.search("вино");
+        Map<String, Searchable> wineResult = searchEngine.search("вино");
         printSearchResult(wineResult);
         ProductBasket.separation();
 
@@ -134,25 +135,13 @@ public class App {
         ProductBasket.separation();
     }
 
-    private static void printSearchResult(List<Searchable> results) {
+    private static void printSearchResult(Map<String, Searchable> results) {
         if (results == null || results.isEmpty()) {
             System.out.println("Ничего не найдено");
             return;
         }
-        for (Searchable item : results) {
+        for (Searchable item : results.values()) {
             System.out.println(item.getStringRepresentation());
-        }
-
-        int count = 0;
-        for (Searchable item : results) {
-            if (item != null) {
-                System.out.println(item.getStringRepresentation());
-                count++;
-            }
-        }
-
-        if (count == 0) {
-            System.out.println("Ничего не найдено");
         }
     }
 }
