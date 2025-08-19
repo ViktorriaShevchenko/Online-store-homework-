@@ -4,10 +4,12 @@ import org.skypro.skyshop.Exception.BestResultNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SearchEngine {
-    private List<Searchable> searchables;
-    private int capacity;
+    private final List<Searchable> searchables;
+    private final int capacity;
 
     public SearchEngine(int capacity) {
         if (capacity <= 0) {
@@ -25,16 +27,16 @@ public class SearchEngine {
         }
     }
 
-    public List<Searchable> search(String query) {
+    public Map<String, Searchable> search(String query) {
         if (query == null || query.trim().isEmpty()) {
             throw new IllegalArgumentException("Поисковый запрос не может быть пустым.");
         }
 
-        List<Searchable> results = new ArrayList<>();
+        Map<String, Searchable> results = new TreeMap<>();
 
         for (Searchable item : searchables) {
             if (item != null && item.getSearchTerm().toLowerCase().contains(query.toLowerCase())) {
-                results.add(item);
+                results.put(item.getName(), item);
                 }
             }
         return results;
