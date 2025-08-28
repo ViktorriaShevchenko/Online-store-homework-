@@ -10,7 +10,7 @@ import org.skypro.skyshop.product.SimpleProduct;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 public class App {
     public static void main(String[] args) {
@@ -68,10 +68,10 @@ public class App {
         ProductBasket.separation();
         System.out.println("Тестирование поисковой системы: ");
         System.out.println("Результаты поиска 'яйца': ");
-        Map<String, Searchable> eggResult = searchEngine.search("яйца");
+        Set<Searchable> eggResult = searchEngine.search("яйца");
         printSearchResult(eggResult);
         System.out.println("Результаты поиска 'вино': ");
-        Map<String, Searchable> wineResult = searchEngine.search("вино");
+        Set<Searchable> wineResult = searchEngine.search("вино");
         printSearchResult(wineResult);
         ProductBasket.separation();
 
@@ -135,12 +135,12 @@ public class App {
         ProductBasket.separation();
     }
 
-    private static void printSearchResult(Map<String, Searchable> results) {
+    private static void printSearchResult(Set<Searchable> results) {
         if (results == null || results.isEmpty()) {
             System.out.println("Ничего не найдено");
             return;
         }
-        for (Searchable item : results.values()) {
+        for (Searchable item : results) {
             System.out.println(item.getStringRepresentation());
         }
     }
