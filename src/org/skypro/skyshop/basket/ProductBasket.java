@@ -29,13 +29,10 @@ public class ProductBasket {
     }
 
     public int getTotalPrice() {
-        int total = 0;
-        for (List<Product> productList : productsMap.values()) {
-            for (Product product : productList) {
-                total += product.getPrice();
-            }
-        }
-        return total;
+        return productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
     public void printBasket() {
@@ -44,37 +41,34 @@ public class ProductBasket {
             return;
         }
 
-        for (List<Product> productList : productsMap.values()) {
-            for (Product product : productList) {
-                System.out.println(product.toString());
-            }
-        }
+        productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .forEach(System.out::println);
+
         System.out.println("Итого: " + getTotalPrice() + " руб.");
-        System.out.println("Специальных товаров: " + countSpecialProducts());
+        System.out.println("Специальных товаров: " + getSpecialCount());
+    }
+
+    private long getSpecialCount() {
+        return productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 
     public boolean containsProduct(String name) {
         if (name == null || name.isBlank()) {
             return false;
         }
-        return productsMap.containsKey(name);
+        return productsMap.values().stream()
+                .flatMap(Collection::stream)
+                .anyMatch(p -> p.getName().equalsIgnoreCase(name));
     }
 
     public void clearBasket() {
         productsMap.clear();
         }
 
-    public int countSpecialProducts() {
-        int specialCount = 0;
-        for (List<Product> productList : productsMap.values()) {
-            for (Product product : productList) {
-                if (product.isSpecial()) {
-                    specialCount++;
-                }
-            }
-        }
-        return specialCount;
-    }
 
     public static void separation() {
         System.out.println();
